@@ -1,10 +1,8 @@
-import Home from './pages/Home';
+import { RouterProvider } from 'react-router';
+
+import router from './Router';
 
 function App() {
-  return (
-    <>
-      <Home />
-    </>
-  );
+  return <RouterProvider router={router} />;
 }
 export default App;
