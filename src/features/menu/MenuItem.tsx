@@ -1,5 +1,12 @@
-function MenuItem({ pizza }) {
-  const { id, name, unitPrice, ingredients, soldOut, imageUrl } = pizza;
+import type { IMenuItem } from '../../types/menu';
+import { formatCurrency } from '../../utils/helpers';
+
+type Props = {
+  item: IMenuItem;
+};
+
+function MenuItem({ item }: Props) {
+  const { name, unitPrice, ingredients, soldOut, imageUrl } = item;
 
   return (
     <li>

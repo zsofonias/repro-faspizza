@@ -1,4 +1,5 @@
-import type { Order } from '@/types/order';
+import type { IMenuItem } from '../types/menu';
+import type { INewOrder, IOrder } from '../types/order';
 
 const API_URL = 'https://react-fast-pizza-api.onrender.com/api';
 
@@ -9,10 +10,10 @@ export async function getMenu() {
   if (!res.ok) throw Error('Failed getting menu');
 
   const { data } = await res.json();
-  return data;
+  return data as IMenuItem[];
 }
 
-export async function getOrder(id: number) {
+export async function getOrder(id: string) {
   const res = await fetch(`${API_URL}/order/${id}`);
   if (!res.ok) throw Error(`Couldn't find order #${id}`);
 
@@ -20,7 +21,7 @@ export async function getOrder(id: number) {
   return data;
 }
 
-export async function createOrder(newOrder: Order) {
+export async function createOrder(newOrder: INewOrder) {
   try {
     const res = await fetch(`${API_URL}/order`, {
       method: 'POST',
@@ -38,7 +39,7 @@ export async function createOrder(newOrder: Order) {
   }
 }
 
-export async function updateOrder(id: number, updateObj: Order) {
+export async function updateOrder(id: number, updateObj: IOrder) {
   try {
     const res = await fetch(`${API_URL}/order/${id}`, {
       method: 'PATCH',
