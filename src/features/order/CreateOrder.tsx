@@ -1,5 +1,7 @@
 import { Form, useActionData, useNavigation } from 'react-router';
 import Button from '../../components/ui/Button';
+import { useSelector } from 'react-redux';
+import type { RootState } from '../../store/store';
 
 const fakeCart = [
   {
@@ -26,12 +28,13 @@ const fakeCart = [
 ];
 
 function CreateOrder() {
-  // const [withPriority, setWithPriority] = useState(false);
   const navigation = useNavigation();
-  const isSubmitting = navigation.state === 'submitting';
-
+  const username = useSelector((state: RootState) => state.user.username);
   const formErrors = useActionData<Record<string, string>>();
 
+  // const [withPriority, setWithPriority] = useState(false);
+
+  const isSubmitting = navigation.state === 'submitting';
   const cart = fakeCart;
 
   return (
@@ -41,7 +44,13 @@ function CreateOrder() {
       <Form method="POST" className="mt-6">
         <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
           <label className="sm:basis-40">First Name</label>
-          <input type="text" name="customer" required className="input grow" />
+          <input
+            type="text"
+            name="customer"
+            defaultValue={username}
+            required
+            className="input grow"
+          />
         </div>
 
         <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">

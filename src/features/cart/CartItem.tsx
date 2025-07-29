@@ -1,6 +1,10 @@
-import Button from '../../components/ui/Button';
-import type { ICartItem } from '../../types/order';
+import { useDispatch } from 'react-redux';
+
+import { removeItem } from '../../store/slices/cartSlice';
 import { formatCurrency } from '../../utils/helpers';
+import Button from '../../components/ui/Button';
+import UpdateItemQuntity from './UpdateItemQuntity';
+import type { ICartItem } from '../../types/order';
 
 type Props = {
   item: ICartItem;
@@ -9,6 +13,8 @@ type Props = {
 function CartItem({ item }: Props) {
   const { name, quantity, totalPrice } = item;
 
+  const dispatch = useDispatch();
+
   return (
     <li className="py-3 sm:flex sm:items-center sm:justify-between">
       <p className="">
@@ -16,7 +22,13 @@ function CartItem({ item }: Props) {
       </p>
       <div className="mt-1 flex items-center justify-between sm:mt-0 sm:gap-6">
         <p className="text-sm font-bold">{formatCurrency(totalPrice)}</p>
-        <Button variant="small">Delete</Button>
+        <UpdateItemQuntity pizzaId={item.pizzaId} />
+        <Button
+          onClick={() => dispatch(removeItem(item.pizzaId))}
+          variant="small"
+        >
+          Delete
+        </Button>
       </div>
     </li>
   );
