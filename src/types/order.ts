@@ -10,17 +10,17 @@ export interface INewOrder {
   customer: string;
   phone: string;
   address: string;
-  priority: boolean;
+  priority?: boolean;
   cart: ICartItem[];
 }
 
 export interface IOrder extends INewOrder {
   id?: string;
   estimatedDelivery: string;
-  position: string;
   orderPrice: number;
-  priorityPrice: number;
   status: string;
+  position?: string;
+  priorityPrice?: number;
 }
 
 export type OrderLoaderProps = {

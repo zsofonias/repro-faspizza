@@ -1,4 +1,5 @@
-import { useLoaderData } from 'react-router';
+import { useEffect } from 'react';
+import { useFetcher, useLoaderData } from 'react-router';
 
 import {
   calcMinutesLeft,
@@ -6,10 +7,21 @@ import {
   formatDate,
 } from '../../utils/helpers';
 import type { IOrder } from '../../types/order';
+import type { IMenuItem } from '../../types/menu';
+
 import OrderItem from './OrderItem';
+import UpdateOrderPriority from './UpdateOrderPriority';
 
 function Order() {
   const order = useLoaderData<IOrder>();
+
+  const fetcher = useFetcher();
+
+  useEffect(() => {
+    if (!fetcher.data && fetcher.state === 'idle') {
+      fetcher.load('/menu');
+    }
+  }, [fetcher]);
 
   const {
     id,
@@ -52,7 +64,16 @@ function Order() {
 
       <ul className="divide-y divide-stone-200 border-t border-b border-stone-200">
         {cart.map((item) => (
-          <OrderItem item={item} key={item.pizzaId} />
+          <OrderItem
+            item={item}
+            key={item.pizzaId}
+            isLoadingIngredients={fetcher.state === 'loading'}
+            ingredients={
+              fetcher.data?.find(
+                (menuItem: IMenuItem) => menuItem.id === item.pizzaId,
+              )?.ingredients
+            }
+          />
         ))}
       </ul>
 
@@ -62,13 +83,16 @@ function Order() {
         </p>
         {priority && (
           <p className="text-sm font-medium text-stone-600">
-            Price priority: {formatCurrency(priorityPrice)}
+            Price priority: {formatCurrency(priorityPrice ?? 0)}
           </p>
         )}
         <p className="font-bold">
-          To pay on delivery: {formatCurrency(orderPrice + priorityPrice)}
+          To pay on delivery:{' '}
+          {formatCurrency(orderPrice + (priorityPrice ?? 0))}
         </p>
       </div>
+
+      {!priority && <UpdateOrderPriority />}
     </div>
   );
 }

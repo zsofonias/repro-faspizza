@@ -1,9 +1,9 @@
 import { redirect, type ActionFunctionArgs } from 'react-router';
 
-import { createOrder } from '../../services/apiRestaurant';
-import type { INewOrder } from '../../types/order';
 import store from '../../store/store';
 import { clearCart } from '../../store/slices/cartSlice';
+import { createOrder, updateOrder } from '../../services/apiRestaurant';
+import type { INewOrder } from '../../types/order';
 
 // https://uibakery.io/regex-library/phone-number
 const isValidPhone = (str: string) =>
@@ -38,4 +38,14 @@ export async function newOrderAction({ request }: ActionFunctionArgs) {
   store.dispatch(clearCart());
 
   return redirect(`/order/${newOrder.id}`);
+}
+
+export async function updateOrderAction({ params }: ActionFunctionArgs) {
+  const data = {
+    priority: true,
+  };
+
+  await updateOrder(params.orderId as string, data);
+
+  return null;
 }
