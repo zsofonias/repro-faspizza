@@ -1,6 +1,9 @@
 import { redirect, type ActionFunctionArgs } from 'react-router';
+
 import { createOrder } from '../../services/apiRestaurant';
 import type { INewOrder } from '../../types/order';
+import store from '../../store/store';
+import { clearCart } from '../../store/slices/cartSlice';
 
 // https://uibakery.io/regex-library/phone-number
 const isValidPhone = (str: string) =>
@@ -31,5 +34,8 @@ export async function newOrderAction({ request }: ActionFunctionArgs) {
   }
 
   const newOrder = await createOrder(order);
+  // clear cart after order is created
+  store.dispatch(clearCart());
+
   return redirect(`/order/${newOrder.id}`);
 }

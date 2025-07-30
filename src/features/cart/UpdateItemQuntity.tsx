@@ -1,10 +1,10 @@
-// import { useDispatch, useSelector } from 'react-redux';
-// import {
-//   decreaseItemQuantity,
-//   getCartItemQuantityById,
-//   increaseItemQuantity,
-// } from '../../store/slices/cartSlice';
-import { useCart } from '../../context/CartContext';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  decreaseItemQuantity,
+  getCartItemQuantityById,
+  increaseItemQuantity,
+} from '../../store/slices/cartSlice';
+
 import Button from '../../components/ui/Button';
 
 type Props = {
@@ -12,19 +12,15 @@ type Props = {
 };
 
 function UpdateItemQuntity({ pizzaId }: Props) {
-  // const itemCount = useSelector(getCartItemQuantityById(pizzaId));
-  // const dispatch = useDispatch();
-  const { increaseItemQuantity, decreaseItemQuantity, getItemQuantity } =
-    useCart();
-  const itemCount = getItemQuantity(pizzaId);
+  const dispatch = useDispatch();
+  const itemCount = useSelector(getCartItemQuantityById(pizzaId));
 
   return (
     <div className="flex items-center gap-2">
       <Button
         key={`-${itemCount}`}
         variant="round"
-        // onClick={() => dispatch(decreaseItemQuantity(pizzaId))}
-        onClick={() => decreaseItemQuantity(pizzaId)}
+        onClick={() => dispatch(decreaseItemQuantity(pizzaId))}
       >
         -
       </Button>
@@ -32,8 +28,7 @@ function UpdateItemQuntity({ pizzaId }: Props) {
       <Button
         key={`+${itemCount}`}
         variant="round"
-        // onClick={() => dispatch(increaseItemQuantity(pizzaId))}
-        onClick={() => increaseItemQuantity(pizzaId)}
+        onClick={() => dispatch(increaseItemQuantity(pizzaId))}
       >
         +
       </Button>

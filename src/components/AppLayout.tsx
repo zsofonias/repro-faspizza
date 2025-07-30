@@ -1,10 +1,9 @@
 import { Outlet, useNavigation } from 'react-router';
 
+import { UserProvider } from '../context/UserContext';
 import Header from './Header';
 import CartOverview from '../features/cart/CartOverview';
 import Loading from './ui/Loading';
-import { UserProvider } from '../context/UserContext';
-import { CartProvider } from '../context/CartContext';
 
 function AppLayout() {
   const navigation = useNavigation();
@@ -12,19 +11,16 @@ function AppLayout() {
   const isLoading = navigation.state === 'loading';
   return (
     <UserProvider>
-      <CartProvider>
-        <div className="grid h-screen grid-rows-[auto_1fr_auto]">
-          {isLoading && <Loading />}
-          <Header />
-
-          <div className="overflow-auto">
-            <main className="mx-auto max-w-3xl">
-              <Outlet />
-            </main>
-          </div>
-          <CartOverview />
+      <div className="grid h-screen grid-rows-[auto_1fr_auto]">
+        {isLoading && <Loading />}
+        <Header />
+        <div className="overflow-auto">
+          <main className="mx-auto max-w-3xl">
+            <Outlet />
+          </main>
         </div>
-      </CartProvider>
+        <CartOverview />
+      </div>
     </UserProvider>
   );
 }

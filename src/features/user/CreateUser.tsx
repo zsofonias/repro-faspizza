@@ -1,22 +1,22 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router';
-import { useDispatch } from 'react-redux';
+// import { useDispatch } from 'react-redux';
 
-import Button from '../../components/ui/Button';
-import { setUsername } from '../../store/slices/userSlice';
+// import { setUsername } from '../../store/slices/userSlice';
 import { useUser } from '../../context/UserContext';
+import Button from '../../components/ui/Button';
 
 function CreateUser() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const [name, setName] = useState('');
-  const { setUsername: setUsernameContext } = useUser();
+  const { setUsername } = useUser();
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!name) return;
-    setUsernameContext(name);
-    dispatch(setUsername(name));
+    setUsername(name);
+    // dispatch(setUsername(name));
     navigate('/menu');
   }
 

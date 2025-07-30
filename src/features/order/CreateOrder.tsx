@@ -1,43 +1,28 @@
+import { useState } from 'react';
+import { Form, useActionData, useNavigation } from 'react-router';
 import { useSelector } from 'react-redux';
 
-import { getUsername } from '../../store/slices/userSlice';
+import { getCart, getTotalCartPrice } from '../../store/slices/cartSlice';
+import { useUser } from '../../context/UserContext';
+import { formatCurrency } from '../../utils/helpers';
 
-import { Form, useActionData, useNavigation } from 'react-router';
 import Button from '../../components/ui/Button';
-
-const fakeCart = [
-  {
-    pizzaId: 12,
-    name: 'Mediterranean',
-    quantity: 2,
-    unitPrice: 16,
-    totalPrice: 32,
-  },
-  {
-    pizzaId: 6,
-    name: 'Vegetale',
-    quantity: 1,
-    unitPrice: 13,
-    totalPrice: 13,
-  },
-  {
-    pizzaId: 11,
-    name: 'Spinach and Mushroom',
-    quantity: 1,
-    unitPrice: 15,
-    totalPrice: 15,
-  },
-];
+import EmptyCart from '../cart/EmptyCart';
 
 function CreateOrder() {
   const navigation = useNavigation();
-  const username = useSelector(getUsername);
+  const { username } = useUser();
+
+  const cart = useSelector(getCart);
+  const totalCartPrice = useSelector(getTotalCartPrice);
+  const [withPriority, setWithPriority] = useState(false);
   const formErrors = useActionData<Record<string, string>>();
 
-  // const [withPriority, setWithPriority] = useState(false);
+  const totalPrice = totalCartPrice + (withPriority ? totalCartPrice * 0.2 : 0);
 
   const isSubmitting = navigation.state === 'submitting';
-  const cart = fakeCart;
+
+  if (!cart.length) return <EmptyCart />;
 
   return (
     <div className="px-4 py-6">
@@ -84,8 +69,8 @@ function CreateOrder() {
             type="checkbox"
             name="priority"
             id="priority"
-            // value={withPriority}
-            // onChange={(e) => setWithPriority(e.target.checked)}
+            value={withPriority ? 'on' : 'off'}
+            onChange={(e) => setWithPriority(e.target.checked)}
             className="h-6 w-6 cursor-pointer accent-yellow-400 focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 focus:outline-none"
           />
           <label htmlFor="priority" className="font-medium">
@@ -97,7 +82,9 @@ function CreateOrder() {
 
         <div className="mt-12">
           <Button isDisabled={isSubmitting}>
-            {isSubmitting ? 'Placing order...' : 'Order now'}
+            {isSubmitting
+              ? 'Placing order...'
+              : `Order now (${formatCurrency(totalPrice)})`}
           </Button>
         </div>
       </Form>
