@@ -1,7 +1,9 @@
+import { useSelector } from 'react-redux';
+
+import { getUsername } from '../../store/slices/userSlice';
+
 import { Form, useActionData, useNavigation } from 'react-router';
 import Button from '../../components/ui/Button';
-import { useSelector } from 'react-redux';
-import type { RootState } from '../../store/store';
 
 const fakeCart = [
   {
@@ -29,7 +31,7 @@ const fakeCart = [
 
 function CreateOrder() {
   const navigation = useNavigation();
-  const username = useSelector((state: RootState) => state.user.username);
+  const username = useSelector(getUsername);
   const formErrors = useActionData<Record<string, string>>();
 
   // const [withPriority, setWithPriority] = useState(false);

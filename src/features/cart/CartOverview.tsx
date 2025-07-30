@@ -1,15 +1,20 @@
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
 import { Link } from 'react-router';
 
+// import {
+//   getCartItemsCount,
+//   getTotalCartPrice,
+// } from '../../store/slices/cartSlice';
+import { useCart } from '../../context/CartContext';
 import { formatCurrency } from '../../utils/helpers';
-import {
-  getCartItemsCount,
-  getTotalCartPrice,
-} from '../../store/slices/cartSlice';
 
 function CartOverview() {
-  const itemsCount = useSelector(getCartItemsCount);
-  const totalPrice = useSelector(getTotalCartPrice);
+  // const itemsCount = useSelector(getCartItemsCount);
+  // const totalPrice = useSelector(getTotalCartPrice);
+
+  const { getItemsCount, getTotalPrice } = useCart();
+  const itemsCount = getItemsCount();
+  const totalPrice = getTotalPrice();
 
   if (!itemsCount) return null;
 

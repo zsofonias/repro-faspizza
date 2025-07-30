@@ -4,15 +4,18 @@ import { useDispatch } from 'react-redux';
 
 import Button from '../../components/ui/Button';
 import { setUsername } from '../../store/slices/userSlice';
+import { useUser } from '../../context/UserContext';
 
 function CreateUser() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [name, setName] = useState('');
+  const { setUsername: setUsernameContext } = useUser();
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!name) return;
+    setUsernameContext(name);
     dispatch(setUsername(name));
     navigate('/menu');
   }

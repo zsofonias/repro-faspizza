@@ -1,16 +1,17 @@
-import { useDispatch, useSelector } from 'react-redux';
+// import { useDispatch, useSelector } from 'react-redux';
 
-import {
-  addItem,
-  getCartItemQuantityById,
-  removeItem,
-} from '../../store/slices/cartSlice';
+// import {
+//   addItem,
+//   getCartItemQuantityById,
+//   removeItem,
+// } from '../../store/slices/cartSlice';
 
+import { useCart } from '../../context/CartContext';
 import type { ICartItem } from '../../types/order';
 import { formatCurrency } from '../../utils/helpers';
+import type { IMenuItem } from '../../types/menu';
 
 import Button from '../../components/ui/Button';
-import type { IMenuItem } from '../../types/menu';
 import UpdateItemQuntity from '../cart/UpdateItemQuntity';
 
 type Props = {
@@ -20,10 +21,13 @@ type Props = {
 function MenuItem({ item }: Props) {
   const { id, name, unitPrice, ingredients, soldOut, imageUrl } = item;
 
-  const itemQuntity = useSelector(getCartItemQuantityById(id));
-  const dispatch = useDispatch();
+  // const itemQuntity = useSelector(getCartItemQuantityById(id));
+  // const dispatch = useDispatch();
+  // const isItemInCart = Boolean(itemQuntity);
 
-  const isItemInCart = Boolean(itemQuntity);
+  const { addItem, removeItem, getItemQuantity } = useCart();
+
+  const isItemInCart = getItemQuantity(id) > 0;
 
   function handleAddToCart() {
     const cartItem: ICartItem = {
@@ -33,7 +37,8 @@ function MenuItem({ item }: Props) {
       unitPrice,
       totalPrice: unitPrice,
     };
-    dispatch(addItem(cartItem));
+    // dispatch(addItem(cartItem));
+    addItem(cartItem);
   }
 
   return (
@@ -62,7 +67,8 @@ function MenuItem({ item }: Props) {
               <Button
                 key="remove"
                 variant="small"
-                onClick={() => dispatch(removeItem(id))}
+                // onClick={() => dispatch(removeItem(id))}
+                onClick={() => removeItem(id)}
               >
                 Remove From Cart
               </Button>

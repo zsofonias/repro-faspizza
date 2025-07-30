@@ -1,17 +1,22 @@
-import { useDispatch, useSelector } from 'react-redux';
+// import { useDispatch, useSelector } from 'react-redux';
 
-import type { RootState } from '../../store/store';
-import { clearCart, getCart } from '../../store/slices/cartSlice';
+// import { clearCart, getCart } from '../../store/slices/cartSlice';
+import { useCart } from '../../context/CartContext';
+import { useUser } from '../../context/UserContext';
 import CartItem from './CartItem';
 import Button from '../../components/ui/Button';
 import LinkButton from '../../components/ui/LinkButton';
 
 function Cart() {
-  const username = useSelector((state: RootState) => state.user.username);
-  const cart = useSelector(getCart);
-  const dispatch = useDispatch();
+  // const username = useSelector(getUsername);
+  // const cart = useSelector(getCart);
+  // const dispatch = useDispatch();
 
-  const isCartEmpty = cart.length === 0;
+  // const isCartEmpty = cart.length === 0;
+
+  const { username } = useUser();
+  const { cart, clearCart, getItemsCount } = useCart();
+  const isCartEmpty = getItemsCount() === 0;
 
   return (
     <div className="px-4 py-3">
@@ -37,7 +42,8 @@ function Cart() {
           <div className="mt-6 space-x-5">
             <Button to="/order/new">Order pizzas</Button>
 
-            <Button variant="secondary" onClick={() => dispatch(clearCart())}>
+            {/* <Button variant="secondary" onClick={() => dispatch(clearCart())}> */}
+            <Button variant="secondary" onClick={() => clearCart()}>
               Clear cart
             </Button>
           </div>
