@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { MouseEvent, ReactNode } from 'react';
 import { Link } from 'react-router';
 
 type Props = {
@@ -6,7 +6,7 @@ type Props = {
   to?: string;
   variant?: 'primary' | 'secondary' | 'small' | 'round';
   isDisabled?: boolean;
-  onClick?: () => void;
+  onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
 };
 
 function Button({

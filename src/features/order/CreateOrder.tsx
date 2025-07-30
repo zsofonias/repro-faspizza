@@ -1,22 +1,33 @@
 import { useState } from 'react';
 import { Form, useActionData, useNavigation } from 'react-router';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { getCart, getTotalCartPrice } from '../../store/slices/cartSlice';
 import { useUser } from '../../context/UserContext';
+import type { AppDispatch } from '../../store/store';
+import { getCart, getTotalCartPrice } from '../../store/slices/cartSlice';
+import { fetchAddress, getUser } from '../../store/slices/userSlice';
 import { formatCurrency } from '../../utils/helpers';
 
-import Button from '../../components/ui/Button';
 import EmptyCart from '../cart/EmptyCart';
+import Button from '../../components/ui/Button';
 
 function CreateOrder() {
-  const navigation = useNavigation();
   const { username } = useUser();
-
+  const navigation = useNavigation();
+  const dispatch = useDispatch<AppDispatch>();
   const cart = useSelector(getCart);
   const totalCartPrice = useSelector(getTotalCartPrice);
   const [withPriority, setWithPriority] = useState(false);
   const formErrors = useActionData<Record<string, string>>();
+
+  const {
+    address,
+    position,
+    status: addressStatus,
+    error: addressError,
+  } = useSelector(getUser);
+
+  const isLoadingAddress = addressStatus === 'loading';
 
   const totalPrice = totalCartPrice + (withPriority ? totalCartPrice * 0.2 : 0);
 
@@ -52,7 +63,7 @@ function CreateOrder() {
           </div>
         </div>
 
-        <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
+        <div className="relative mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
           <label className="sm:basis-40">Address</label>
           <div className="grow">
             <input
@@ -60,8 +71,29 @@ function CreateOrder() {
               name="address"
               required
               className="input w-full"
+              disabled={isLoadingAddress}
+              defaultValue={address}
             />
+            {addressStatus === 'error' && (
+              <p className="mt-2 bg-red-100 p-2 text-xs text-red-700">
+                {addressError}
+              </p>
+            )}
           </div>
+          {!position?.latitude && (
+            <span className="absolute top-[35px] right-[3px] z-50 sm:top-[3px] md:top-[5px] md:right-[5px]">
+              <Button
+                isDisabled={isLoadingAddress}
+                variant="small"
+                onClick={(e) => {
+                  e.preventDefault();
+                  dispatch(fetchAddress());
+                }}
+              >
+                {isLoadingAddress ? 'Getting location...' : 'Get address'}
+              </Button>
+            </span>
+          )}
         </div>
 
         <div className="flex items-center gap-3">
@@ -79,9 +111,18 @@ function CreateOrder() {
         </div>
 
         <input type="hidden" name="cart" value={JSON.stringify(cart)} />
+        <input
+          type="hidden"
+          name="position"
+          value={
+            position?.latitude && position?.longitude
+              ? `${position.latitude},${position.longitude}`
+              : ''
+          }
+        />
 
         <div className="mt-12">
-          <Button isDisabled={isSubmitting}>
+          <Button isDisabled={isSubmitting || isLoadingAddress}>
             {isSubmitting
               ? 'Placing order...'
               : `Order now (${formatCurrency(totalPrice)})`}
